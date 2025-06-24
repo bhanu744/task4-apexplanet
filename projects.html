@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personal Portfolio + Projects + Contact</title>
+  <style>
+   header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+      background-color: #2c3e50;
+  padding: 10px 20px;
+}
+
+.complex h1 {
+  color: white;
+  margin: 0;
+  font-size: 24px;
+}
+
+nav {
+  display: flex;
+  gap: 15px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: #e67e22;
+}
+
+    nav a:hover {
+      color: #e67e22;
+    }
+    img{
+      width:100px;
+      height:100px;
+      border-radius: 50%;
+    }
+     
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    
+    .todo-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-top:20px;
+    }
+
+    #taskInput {
+      padding: 10px;
+      width: 70%;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+
+    li {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #e8f5e9;
+      display: flex;
+      justify-content: space-between;
+      border-radius: 5px;
+    }
+
+    li.completed {
+      text-decoration: line-through;
+      background-color: #dcedc8;
+    }
+
+    .btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      margin-left: 5px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .btn-complete {
+      background: #2196f3;
+    }
+
+    
+    .product-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .filters {
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 8px;
+      margin-right: 10px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .product {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fefefe;
+    }
+
+    .product h4 {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+  <div class="complex">
+ <h1>Bhandhavya Neeli</h1></div>
+ <nav>
+  <a href="index-apex4.html">Home</a> |
+      <a href="about.html">About</a> |
+      <a href="projects.html">Projects</a> |
+      <a href="contact.html">Contact</a>
+ </nav>
+ 
+  </header>
+  <div class="todo-container">
+    <h2>📝 To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Enter a task" />
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+
+  
+  <div class="product-container">
+    <h2>🛍️ Product Listings</h2>
+    <div class="filters">
+      <select id="categoryFilter" onchange="filterAndSortProducts()">
+        <option value="all">All Categories</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+      </select>
+
+      <select id="sortOption" onchange="filterAndSortProducts()">
+        <option value="default">Sort by</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+        <option value="rating">Rating</option>
+      </select>
+    </div>
+    <div class="product-grid" id="productList"></div>
+  </div>
+<button id="goBTN">go back to home</button>
+  <script>
+    
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = task.completed ? 'completed' : '';
+        li.textContent = task.text;
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.className = 'btn';
+        delBtn.onclick = () => {
+          tasks.splice(index, 1);
+          saveTasks();
+          renderTasks();
+        };
+
+        const compBtn = document.createElement('button');
+        compBtn.textContent = 'Complete';
+        compBtn.className = 'btn btn-complete';
+        compBtn.onclick = () => {
+          tasks[index].completed = !tasks[index].completed;
+          saveTasks();
+          renderTasks();
+        };
+
+        li.appendChild(compBtn);
+        li.appendChild(delBtn);
+        taskList.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const task = input.value.trim();
+      if (task !== '') {
+        tasks.push({ text: task, completed: false });
+        saveTasks();
+        renderTasks();
+        input.value = '';
+      }
+    }
+
+    renderTasks();
+
+    
+    const products = [
+      { name: 'Smartphone', price: 500, category: 'electronics', rating: 4.5,image:"https://mcprod.jumbo.ae/media/catalog/product/i/p/iphone_15_pro_max_natural_titanium_pdp_image_position-1__en-me.jpg" },
+      { name: 'Laptop', price: 900, category: 'electronics', rating: 4.8,image:"https://th.bing.com/th/id/OIP.ENFiI2expgUp0QSSpOaWQwHaF5?rs=1&pid=ImgDetMain" },
+      { name: 'T-shirt', price: 20, category: 'clothing', rating: 4.0 ,image:"https://cdn.pixabay.com/photo/2024/02/06/18/10/ai-generated-8557635_1280.jpg"},
+      { name: 'Headphones', price: 100, category: 'electronics', rating: 4.3,image:"https://th.bing.com/th/id/OIP.V7IGZ3EZ__peC1jLOpTrywHaE8?rs=1&pid=ImgDetMain"},
+      { name: 'Jeans', price: 40, category: 'clothing', rating: 3.9,image:"https://www.jiomart.com/images/product/500x630/460609612_blue/ankle-length-slim-fit-jeans-model-460609612_blue-0-202305190100.jpg" },
+    ];
+
+    function filterAndSortProducts() {
+      let category = document.getElementById('categoryFilter').value;
+      let sort = document.getElementById('sortOption').value;
+      let filtered = products.slice();
+
+      
+      if (category !== 'all') {
+        filtered = filtered.filter(p => p.category === category);
+      }
+
+      
+      if (sort === 'price-low') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sort === 'price-high') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (sort === 'rating') {
+        filtered.sort((a, b) => b.rating - a.rating);
+      }
+
+      renderProducts(filtered);
+    }
+
+    function renderProducts(data) {
+  const productList = document.getElementById('productList');
+  productList.innerHTML = '';
+  data.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" style="width:100%; border-radius:6px; margin-bottom:10px;">
+      <h4>${p.name}</h4>
+      <p>Price: $${p.price}</p>
+      <p>Rating: ${p.rating} ⭐</p>
+    `;
+    productList.appendChild(div);
+  });
+}
+document.getElementById('goBTN').addEventListener('click', function () {
+    window.location.href = "index-apex4.html";
+  });
+
+    
+    filterAndSortProducts();
+  </script>
+
+</body>
+</html>
+
+  
+  
